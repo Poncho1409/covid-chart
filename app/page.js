@@ -1,6 +1,7 @@
 'use client'
 //import Image from 'next/image'
 //import styles from './page.module.css'
+import { useState } from 'react';
 import React from 'react';
 import {Doughnut} from 'react-chartjs-2';
 import {Chart, ArcElement} from 'chart.js'
@@ -14,26 +15,26 @@ const colors = {
   'white':  '#F9F9ED'
 };
 
-const data = {
-    labels: [
-      'Red',
-      'Green',
-      'Yellow'
-  ],
-  datasets: [{
-    data: [300, 50, 100],
-    backgroundColor: [
-    '#FF6384',
-    '#36A2EB',
-    '#FFCE56'
-    ],
-    hoverBackgroundColor: [
-    '#FF6384',
-    '#36A2EB',
-    '#FFCE56'
-    ]
-  }]
-};
+// const data = {
+//     labels: [
+//       'Red',
+//       'Green',
+//       'Yellow'
+//   ],
+//   datasets: [{
+//     data: [300, 50, 100],
+//     backgroundColor: [
+//     '#FF6384',
+//     '#36A2EB',
+//     '#FFCE56'
+//     ],
+//     hoverBackgroundColor: [
+//     '#FF6384',
+//     '#36A2EB',
+//     '#FFCE56'
+//     ]
+//   }]
+// };
 
 let dataCountryAPI = {
   "updated": 1687370298548,
@@ -68,6 +69,39 @@ let dataCountryAPI = {
   "criticalPerOneMillion": 0
 };
 
+let dataUSAAPI = {
+  "updated": 1687374498537,
+  "country": "USA",
+  "countryInfo": {
+      "_id": 840,
+      "iso2": "US",
+      "iso3": "USA",
+      "lat": 38,
+      "long": -97,
+      "flag": "https://disease.sh/assets/img/flags/us.png"
+  },
+  "cases": 107248397,
+  "todayCases": 1879,
+  "deaths": 1167387,
+  "todayDeaths": 2,
+  "recovered": 105382233,
+  "todayRecovered": 1904,
+  "active": 698777,
+  "critical": 799,
+  "casesPerOneMillion": 320331,
+  "deathsPerOneMillion": 3487,
+  "tests": 1180622285,
+  "testsPerOneMillion": 3526295,
+  "population": 334805269,
+  "continent": "North America",
+  "oneCasePerPeople": 3,
+  "oneDeathPerPeople": 287,
+  "oneTestPerPeople": 0,
+  "activePerOneMillion": 2087.11,
+  "recoveredPerOneMillion": 314756.79,
+  "criticalPerOneMillion": 2.39
+}
+
 let dataContry2Chart = {
   labels: ['Casos', 'Muertes', 'Recuperaciones'],
   datasets: [
@@ -79,14 +113,39 @@ let dataContry2Chart = {
 };
 
 export default function Home() {
+
+  const [data, setData] = useState(dataContry2Chart);
+  const [country, setCountry] = useState('Mexico');
+
+  function handleClick(dataCountry) {
+
+    dataContry2Chart = {
+      labels: ['Casos', 'Muertes', 'Recuperaciones'],
+      datasets: [
+        {
+          data: [dataCountry.cases, dataCountry.deaths, dataCountry.recovered],
+          backgroundColor: [colors.red, colors.gray, colors.blue]
+        }
+      ]
+    };
+
+    setData(dataContry2Chart);
+    setCountry(dataCountry.country);
+  }
+
   return (
     <>
-      <h2>Doughnut Example</h2>
-      <Doughnut
-        data={dataContry2Chart}
-        width={400}
-        height={400}
-      />
+      
+      <button onClick={() => handleClick(dataCountryAPI)} >Mexico</button>
+      <button onClick={() => handleClick(dataUSAAPI)} >USA</button>
+      <h2>COVID DATA OF {country}</h2>
+      <div width="200px" height="200px">
+        <Doughnut
+          data={dataContry2Chart}
+          width={200}
+          height={200}
+        />
+      </div>
   </>
-  )
+  );
 }
