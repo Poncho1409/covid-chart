@@ -1,5 +1,5 @@
 'use client'
-//import Image from 'next/image'
+import Image from 'next/image'
 //import styles from './page.module.css'
 import { useState } from 'react';
 import React from 'react';
@@ -116,6 +116,7 @@ export default function Home() {
 
   const [data, setData] = useState(dataContry2Chart);
   const [country, setCountry] = useState('Mexico');
+  const [urlFlag, setUrlFlag] = useState('https://disease.sh/assets/img/flags/mx.png');
 
   function handleClick(dataCountry) {
 
@@ -131,6 +132,7 @@ export default function Home() {
 
     setData(dataContry2Chart);
     setCountry(dataCountry.country);
+    setUrlFlag(dataCountry.countryInfo.flag)
   }
 
   return (
@@ -139,7 +141,13 @@ export default function Home() {
       <button onClick={() => handleClick(dataCountryAPI)} >Mexico</button>
       <button onClick={() => handleClick(dataUSAAPI)} >USA</button>
       <h2>COVID DATA OF {country}</h2>
-      <div width="200px" height="200px">
+      <Image
+        src={urlFlag}
+        width={200}
+        height={100}
+        alt="picture of the country flag"
+      />
+      <div>
         <Doughnut
           data={dataContry2Chart}
           width={200}
