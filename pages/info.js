@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react';
 import Table from '../app/components/table'
+import Card from '../app/components/card';
 import Image from 'next/image'
 import React from 'react';
 import {Doughnut} from 'react-chartjs-2';
@@ -106,18 +107,20 @@ export default function Home({splitCountriesData}) {
                     <div className='col'>
                         <div className="container-md mx-auto p-3 align-items-center">
                             {empty ? 
-                                <div className='card text-bg-light mb-3'>
-                                    <div className="card-body">
-                                        <h5 className="card-title text-center">Select a country</h5>
-                                    </div>
-                                </div>:
+                                // <div className='card text-bg-light mb-3'>
+                                //     <div className="card-body">
+                                //         <h5 className="card-title text-center">Select a country</h5>
+                                //     </div>
+                                // </div>:
+                                <Card style="light" text="Select a Country"></Card>:
                                 <div>
                                     {loading ? 
-                                        <div className='card text-bg-secundary mb-3'>
-                                            <div className="card-body">
-                                                <h5 className="card-title text-center">Loading data</h5>
-                                            </div>
-                                        </div> :
+                                        // <div className='card text-bg-secundary mb-3'>
+                                        //     <div className="card-body">
+                                        //         <h5 className="card-title text-center">Loading data</h5>
+                                        //     </div>
+                                        // </div> 
+                                        <Card style="secundary" text="Loading data"></Card>:
                                         <div> 
                                         {success ? 
                                             <div>
@@ -150,11 +153,12 @@ export default function Home({splitCountriesData}) {
                                                     </div>
                                                 </div>
                                             </div> :
-                                            <div className='card text-bg-primary mb-3'>
-                                                <div className="card-body">
-                                                    <h5 className="card-title text-center">Error loading data</h5>
-                                                </div>
-                                            </div>
+                                            // <div className='card text-bg-primary mb-3'>
+                                            //     <div className="card-body">
+                                            //         <h5 className="card-title text-center">Error loading data</h5>
+                                            //     </div>
+                                            // </div>
+                                            <Card style="danger" text="Error loading data"></Card>
                                         } </div>
                                     }
                                 </div>
