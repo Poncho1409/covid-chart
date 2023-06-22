@@ -72,8 +72,8 @@ export default function Home({splitCountriesData}) {
         <>
             <h1>Lista de paises</h1>
             <div>{page}</div>
-            <button onClick={decremetPage} >&lt;</button>
-            <button onClick={incrementPage} >&gt;</button>
+            <button className="btn btn btn-light" onClick={decremetPage} >&lt;</button>
+            <button className="btn btn btn-light" onClick={incrementPage} >&gt;</button>
             
             <ul>
             {splitCountriesData[page].map(({ country, iso3 }) => (
