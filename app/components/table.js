@@ -14,7 +14,7 @@ export default function Table({splitCountriesData, onClickFunction = () => {}}){
         }
     }
     return(
-        <div className="container-md mx-auto p-5">            
+        <div className="container-md mx-auto p-3">            
             <ul className='list-group'>
             {splitCountriesData[page].map(({ country, iso3 }) => (
                 <li className='list-group-item d-flex justify-content-between align-items-start' key={iso3}>
