@@ -11,16 +11,16 @@ const colors = {
     'red':    '#EF233C',
     'blue':   '#2EC0F9',
     'gray':   '#6A706E',
-    'green':  '#DBF4A7',
+    'green':  '#198754',
     'white':  '#F9F9ED'
 };
 
 let dataContry2Chart = {
-    labels: ['Casos', 'Muertes', 'Recuperaciones'],
+    labels: ['Muertes', 'Recuperaciones'],
     datasets: [
       {
-        data: [5, 10, 1],
-        backgroundColor: [colors.red, colors.gray, colors.blue]
+        data: [1, 10],
+        backgroundColor: [colors.gray, colors.green]
       }
     ]
 };
@@ -28,10 +28,10 @@ let dataContry2Chart = {
 export async function getServerSideProps(context) {
 
     const countriesData = require('../app/src/countries.json');
-
+    const chunkSize = 10;
     const splitCountriesData = [];
-    for (let i = 0; i < countriesData.length; i += 10) {
-        const chunk = countriesData.slice(i, i + 10);
+    for (let i = 0; i < countriesData.length; i += chunkSize) {
+        const chunk = countriesData.slice(i, i + chunkSize);
         splitCountriesData.push(chunk);
     }
     
@@ -43,7 +43,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function Home({splitCountriesData}) {
-    const [page, setPage] = useState(0);
+    
     const [countryData, setCountryData] = useState(null);
 
     const [empty, setEmpty] = useState(true);
@@ -63,22 +63,21 @@ export default function Home({splitCountriesData}) {
             const result = await response.json();
             setCountryData(result);
             dataContry2Chart = {
-                labels: ['Casos', 'Muertes', 'Recuperaciones'],
+                labels: ['Muertes', 'Recuperaciones'],
                 datasets: [
                   {
-                    data: [result.cases, result.deaths, result.recovered],
-                    backgroundColor: [colors.red, colors.gray, colors.blue]
+                    data: [result.deaths, result.recovered],
+                    backgroundColor: [colors.gray, colors.green]
                   }
                 ]
             };
 
         }catch{
-            setLoading(false);
             setError(true);
-        }finally{
             setLoading(false);
+        }finally{
             setSucces(true);
-
+            setLoading(false);
             // dataContry2Chart = {
             //     labels: ['Casos', 'Muertes', 'Recuperaciones'],
             //     datasets: [
@@ -93,43 +92,74 @@ export default function Home({splitCountriesData}) {
     };
 
     return (
-        <div className='container'>
-            <div className='row'>
-                <div className='col'>
-                    <Table splitCountriesData={splitCountriesData} onClickFunction={callAPI}></Table>
+        <div>
+            <nav className="navbar bar bg-primary text-bg-primary text-center">
+                <div className="container-fluid justify-content-center">
+                    <h2>COVID-19 Status</h2>
                 </div>
-                <div className='col'>
-                    {/* <MyChart empty={empty} loading={loading} success={success} countryData={countryData}></MyChart> */}
-
-                    <div className="container-md mx-auto p-5">
-                        {/* <Doughnut
-                            data={dataContry2Chart}
-                            width={200}
-                            height={200}
-                        /> */}
-                        {empty ? 
-                            <div>Selecciona un pais</div> :
-                            <div>
-                                {loading ? 
-                                    <div>Cargando datos ...</div> :
-                                    <div> 
-                                    {success ? 
-                                        <div>
-                                            {/* <MyChart empty={empty} loading={loading} success={success} countryData={countryData}></MyChart> */}
-                                            {/* {typeof countryData} */}
-                                            <Doughnut
-                                                data={dataContry2Chart}
-                                                width={200}
-                                                height={200}
-                                            />
+            </nav>
+            <div className='container'>
+                <div className='row'>
+                    <div className='col'>
+                        <Table splitCountriesData={splitCountriesData} onClickFunction={callAPI}></Table>
+                    </div>
+                    <div className='col'>
+                        <div className="container-md mx-auto p-3 align-items-center">
+                            {empty ? 
+                                <div className='card text-bg-light mb-3'>
+                                    <div className="card-body">
+                                        <h5 className="card-title text-center">Select a country</h5>
+                                    </div>
+                                </div>:
+                                <div>
+                                    {loading ? 
+                                        <div className='card text-bg-secundary mb-3'>
+                                            <div className="card-body">
+                                                <h5 className="card-title text-center">Loading data</h5>
+                                            </div>
                                         </div> :
-                                        <div>
-                                            Error al cargar los datos
-                                        </div>
-                                    } </div>
-                                }
-                            </div>
-                        }
+                                        <div> 
+                                        {success ? 
+                                            <div>
+                                                {/* <MyChart empty={empty} loading={loading} success={success} countryData={countryData}></MyChart> */}
+                                                {/* {typeof countryData} */}
+                                                {/* <Image
+                                                    src={countryData.countryInfo.flag}
+                                                    width={200}
+                                                    height={100}
+                                                    alt="picture of the country flag"
+                                                /> */}
+                                                <h3 className='text-center'>{countryData.country}</h3>
+                                                <div className='p-3'>
+                                                    <Doughnut
+                                                        data={dataContry2Chart}
+                                                        width={400}
+                                                        height={400}
+                                                    />
+                                                </div>
+                                                <div className='text-center'>
+                                                    <div className='row'>
+                                                    <div class="col">Total cases</div>
+                                                        <div class="col bg-danger text-bg-danger">{countryData.cases}</div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">Recovered</div>
+                                                        <div class="col bg-success text-bg-primary">{countryData.recovered}</div>
+                                                        <div class="col">Deaths</div>
+                                                        <div class="col bg-secondary text-bg-secondary">{countryData.deaths}</div>
+                                                    </div>
+                                                </div>
+                                            </div> :
+                                            <div className='card text-bg-primary mb-3'>
+                                                <div className="card-body">
+                                                    <h5 className="card-title text-center">Error loading data</h5>
+                                                </div>
+                                            </div>
+                                        } </div>
+                                    }
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
